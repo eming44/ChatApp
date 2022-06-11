@@ -1,0 +1,251 @@
+﻿<Window x:Class="TCPClientWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:TCPClientWPF"
+        mc:Ignorable="d"
+        Title="ClientUI"
+        Height="650"
+        Width="1000"
+        Background="#29292e">
+    <Window.Resources>
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="AccentColor">#2ac997</SolidColorBrush>
+
+            <Style x:Key="MainUserMessageStyle" TargetType="ListViewItem">
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+                <Setter Property="Focusable" Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                            <Border x:Name="messageContainer"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    Background="{TemplateBinding Background}" 
+                                    Padding="{TemplateBinding Padding}"
+                                    SnapsToDevicePixels="true">
+                                <StackPanel>
+                                    <Label Content="{Binding Author}"
+                                           Foreground="#c1c1c1" 
+                                           Visibility="{Binding IsAuthorVisible}"
+                                           HorizontalContentAlignment="Right" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label x:Name="timeLabel" 
+                                               Content="{Binding Time}" 
+                                               Foreground="#c1c1c1"
+                                               Visibility="Hidden"
+                                               VerticalContentAlignment="Center" />
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" TargetName="messageContainer" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" TargetName="messageContainer" Value="Transparent"/>
+                                    <Setter Property="Visibility" TargetName="timeLabel" Value="Visible"/>
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+            </Style>
+            <Style x:Key="UserMessageStyle" TargetType="ListViewItem">
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="Focusable" Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                            <Border x:Name="messageContainer"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    Background="{TemplateBinding Background}" 
+                                    Padding="{TemplateBinding Padding}"
+                                    SnapsToDevicePixels="true">
+                                <StackPanel>
+                                    <Label Content="{Binding Author}"
+                                           Foreground="#c1c1c1" 
+                                           Visibility="{Binding IsAuthorVisible}"
+                                           HorizontalContentAlignment="Left"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        <Label x:Name="timeLabel" 
+                                               Content="{Binding Time}" 
+                                               Foreground="#c1c1c1"
+                                               Visibility="Hidden"
+                                               VerticalContentAlignment="Center" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" TargetName="messageContainer" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" TargetName="messageContainer" Value="Transparent"/>
+                                    <Setter Property="Visibility" TargetName="timeLabel" Value="Visible"/>
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MessageLabelStyle" TargetType="TextBlock">
+                <Setter Property="Text" Value="{Binding Text}" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Margin" Value="8, 3, 8, 5" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="MaxWidth" Value="420" />
+            </Style>
+
+            <DataTemplate x:Key="MainUserMessageTemplate">
+                <Border CornerRadius="12"
+                        Background="{StaticResource AccentColor}">
+                    <TextBlock Style="{StaticResource MessageLabelStyle}" />
+                </Border>
+            </DataTemplate>
+            
+            <DataTemplate x:Key="UserMessageTemplate">
+                <Border Background="#3b3b3d"
+                        CornerRadius="12">
+                    <TextBlock Style="{StaticResource MessageLabelStyle}" />
+                </Border>
+            </DataTemplate>
+
+            <local:MainUserDataTemplateSelector x:Key="mainUserDataTemplateSelector" />
+            <local:MainUserStyleSelector x:Key="mainUserStyleSelector" />
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Window.DataContext>
+        <local:ViewModel />
+    </Window.DataContext>
+    
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ListView ItemsSource="{Binding Users}" 
+                      Background="Transparent"
+                      BorderThickness="0, 0, 1, 0"
+                      BorderBrush="#545454">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="#16161a"
+                                CornerRadius="10">
+                            <Grid Width="250">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Margin="15, 0, 0, 0">
+                                    <materialDesign:PackIcon Width="40"
+                                                             Height="40"
+                                                             Kind="AccountCircleOutline"
+                                                             Foreground="#a1a1a1"
+                                                             Margin="0, 10" />
+                                    <Border Width="10"
+                                            Height="10"
+                                            Background="LimeGreen"
+                                            CornerRadius="10"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Margin="0, 0, 0, 10" />
+                                </Grid>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Username}"
+                                           FontSize="18"
+                                           VerticalAlignment="Center"
+                                           Foreground="White" 
+                                           Margin="20, 0, 0, 0" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackPanel Grid.Row="1"
+                        VerticalAlignment="Bottom"
+                        Margin="0, 10, 0, 0">
+                <TextBox Background="#d1d1d1"
+                         Width="180"
+                         Margin="0, 0, 0, 10"
+                         Text="{Binding MainClientUsername, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding ConnectToServerCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Content="Connect to server" 
+                        Width="180"
+                        Margin="0, 0, 0, 10"
+                        Command="{Binding ConnectToServerCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ListView ItemsSource="{Binding Messages}"
+                      Background="Transparent"
+                      ItemContainerStyleSelector="{StaticResource mainUserStyleSelector}"
+                      BorderThickness="0"
+                      SelectionMode="Single"
+                      ItemTemplateSelector="{StaticResource mainUserDataTemplateSelector}" />
+            <Grid Grid.Row="1"
+                  Margin="10, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Background="#e1e1e1"
+                        CornerRadius="10"
+                        Padding="10, 5, 5, 5">
+                    <TextBox Background="Transparent" 
+                             BorderThickness="0"
+                             Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Return" Command="{Binding SendMessageCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </Border>
+
+                <Border Grid.Column="1" 
+                        CornerRadius="10"
+                        Background="{StaticResource AccentColor}"
+                        Margin="10, 0, 0, 0">
+                    <Button BorderThickness="0"
+                            Width="40"
+                            Command="{Binding SendMessageCommand}"
+                            Background="Transparent">
+                        <Button.Content>
+                            <materialDesign:PackIcon Kind="SendOutline" 
+                                                     Foreground="White" />
+                        </Button.Content>
+                    </Button>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
