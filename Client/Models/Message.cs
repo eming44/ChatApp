@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace TCPClientWPF
+namespace Client
 {
     public class Message
     {

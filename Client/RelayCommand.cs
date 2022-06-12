@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace TCPClientWPF
+namespace Client
 {
     public class RelayCommand : ICommand
     {

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace TCPClientWPF
+namespace Client
 {
     public class MainUserStyleSelector : StyleSelector
     {
@@ -10,7 +10,7 @@ namespace TCPClientWPF
             FrameworkElement elemnt = container as FrameworkElement;
             Message message = item as Message;
 
-            return message.Author == ViewModel.MainClientUsername
+            return message.Author == MainViewModel.MainClientUsername
                 ? elemnt.FindResource("MainUserMessageStyle") as Style
                 : elemnt.FindResource("UserMessageStyle") as Style;
         }

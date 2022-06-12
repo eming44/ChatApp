@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 
-namespace TCPClientWPF
+namespace Client
 {
     public class PackageReader : BinaryReader
     {

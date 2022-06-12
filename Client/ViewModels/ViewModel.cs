@@ -4,14 +4,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
-namespace TCPClientWPF
+namespace Client
 {
-    public class ViewModel : INotifyPropertyChanged
+    public class MainViewModel : INotifyPropertyChanged
     {
         private Server server;
         private string message;
 
-        public ViewModel()
+        public MainViewModel()
         {
             this.Users = new ObservableCollection<User>();
             this.Messages = new ObservableCollection<Message>();

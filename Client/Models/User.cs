@@ -1,4 +1,4 @@
-﻿namespace TCPClientWPF
+﻿namespace Client
 {
     public class User
     {
