@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TCPClientWPF
+namespace Client
 {
     public static class MessageService
     {
