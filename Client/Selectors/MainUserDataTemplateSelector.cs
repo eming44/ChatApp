@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Client.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Client
@@ -7,12 +8,12 @@ namespace Client
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            FrameworkElement elemnt = container as FrameworkElement;
+            FrameworkElement element = container as FrameworkElement;
             Message message = item as Message;
 
             return message.Author == MainViewModel.MainClientUsername 
-                ? elemnt.FindResource("MainUserMessageTemplate") as DataTemplate
-                : elemnt.FindResource("UserMessageTemplate") as DataTemplate;
+                ? element.FindResource("MainUserMessageTemplate") as DataTemplate
+                : element.FindResource("UserMessageTemplate") as DataTemplate;
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Client
         public event Action UserConnectedEvent;
         public event Action MessageReceivedEvent;
         public event Action UserDisconnectedEvent;
+        public event Action UserActivityChangedEvent;
 
         public void ConnectToServer(string username)
         {
@@ -46,6 +47,14 @@ namespace Client
             this.client.Client.Send(messagePackage.GetPackageBytes());
         }
 
+        public void SendActivityStatusChanged(ActivityStatus status)
+        {
+            PackageBuilder messagePackage = new PackageBuilder();
+            messagePackage.WriteOpCode(5);
+            messagePackage.WriteMessage(status.ToString());
+            this.client.Client.Send(messagePackage.GetPackageBytes());
+        }
+
         private void ReadPackages()
         {
             Task.Run(() => 
@@ -64,6 +73,9 @@ namespace Client
                             break;
                         case 4:
                             this.UserDisconnectedEvent?.Invoke();
+                            break;
+                        case 5:
+                            this.UserActivityChangedEvent?.Invoke();
                             break;
                         default:
                             Console.WriteLine("Package OPCODE not found");
