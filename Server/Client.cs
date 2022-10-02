@@ -34,12 +34,18 @@ namespace Server
                 try
                 {
                     byte opcode = this.packageReader.ReadByte();
+                    string message = this.packageReader.ReadMessage();
 
                     if (opcode == 3)
                     {
-                        string message = this.packageReader.ReadMessage();
                         Console.WriteLine($"[{DateTime.Now}] {this.UserName}: {message}");
                         Program.BroadcastMessage($"[{DateTime.Now}] {this.UserName}: {message}");
+                    }
+
+                    if (opcode == 5)
+                    {
+                        Console.WriteLine($"[{DateTime.Now}] {this.UserName}: changed status to [{message}]");
+                        Program.BroadCastActivityStatusChanged($"[{DateTime.Now}] {this.UserName}: {message}");
                     }
                 }
                 catch (Exception)

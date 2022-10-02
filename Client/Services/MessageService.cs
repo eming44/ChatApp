@@ -23,6 +23,23 @@ namespace Client
             };
         }
 
+        public static ActivityStatusMessage CreateActivityStatusMessage(string statusMessageFromServer)
+        {
+            if (string.IsNullOrEmpty(statusMessageFromServer))
+            {
+                return null;
+            }
+
+            string namedText = GetNamedText(statusMessageFromServer);
+
+            return new ActivityStatusMessage
+            {
+                Author = GetAuthor(namedText),
+                Status = GetActivityStatus(namedText),
+                SentTime = Convert.ToDateTime(GetSentTime(statusMessageFromServer))
+            };
+        }
+
         private static string GetNamedText(string fullText)
         {
             int endPointIndex = GetEndPointIndex(fullText, ']');
@@ -50,6 +67,12 @@ namespace Client
         private static int GetEndPointIndex(string text, char endPoint)
         {
             return text.IndexOf(endPoint);
+        }
+
+        private static ActivityStatus GetActivityStatus(string text)
+        {
+            string statusString = GetText(text);
+            return (ActivityStatus)Enum.Parse(typeof(ActivityStatus), statusString);
         }
     }
 }

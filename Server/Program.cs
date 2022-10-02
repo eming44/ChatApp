@@ -37,6 +37,38 @@ namespace Server
             }
         }
 
+        public static void BroadCastActivityStatusChanged(string status)
+        {
+            if (users.Count <= 1)
+            {
+                return;
+            }
+
+            string authorUserName;
+
+            char startingChar = ']';
+            int startingPoint = status.IndexOf(startingChar);
+            startingPoint += 2;
+            authorUserName = status.Substring(startingPoint);
+
+            char endingChar = ':';
+            int endPoint = authorUserName.IndexOf(endingChar);
+            authorUserName = authorUserName.Substring(0, endPoint);
+
+            foreach (Client user in users)
+            {
+                if (user.UserName == authorUserName)
+                {
+                    continue;
+                }
+
+                PackageBuilder broadcastPackage = new PackageBuilder();
+                broadcastPackage.WriteOpCode(5);
+                broadcastPackage.WriteMessage(status);
+                user.ClientSocket.Client.Send(broadcastPackage.GetPackageBytes());
+            }
+        }
+
         public static void BroadcastDisconnection(string uid)
         {
             Client disconnectedClient = users.Where(user => user.UID.ToString() == uid).FirstOrDefault();
